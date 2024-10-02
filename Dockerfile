@@ -7,6 +7,26 @@ FROM python:${PYTHON_VERSION}-slim AS base
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        libxml2-dev \
+        libxslt1-dev \
+        antiword \
+        unrtf \
+        poppler-utils \
+        pstotext \
+        tesseract-ocr \
+        flac \
+        ffmpeg \
+        lame \
+        libmad0 \
+        libsox-fmt-mp3 \
+        sox \
+        libjpeg-dev \
+        swig \
+        libpulse-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 ARG UID=1000
