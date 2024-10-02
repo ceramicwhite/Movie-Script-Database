@@ -10,7 +10,7 @@ from unidecode import unidecode
 from tqdm.std import tqdm
 from fuzzywuzzy import fuzz
 
-import imdb
+from imdb import Cinemagoer
 
 from dotenv import load_dotenv
 import os
@@ -21,7 +21,7 @@ import random
 
 load_dotenv()  # Load environment variables from .env file
 
-ia = imdb.IMDb()
+ia = Cinemagoer()
 
 f = open('sources.json', 'r')
 data = json.load(f)
@@ -187,7 +187,7 @@ def get_imdb(name):
                 return {}
             movie_id = first_result['href'].split('/title/')[1].split('/')[0]
 
-        # Fetch movie details using IMDbPY
+        # Fetch movie details using Cinemagoer
         movie = ia.get_movie(movie_id.replace('tt', ''))
 
         if 'year' in movie:
