@@ -16,6 +16,8 @@ from dotenv import load_dotenv
 import os
 import requests
 from bs4 import BeautifulSoup
+import time
+import random
 
 load_dotenv()  # Load environment variables from .env file
 
@@ -34,7 +36,6 @@ forbidden = ["the", "a", "an", "and", "or", "part",
              "vol", "chapter", "movie", "transcript"]
 
 metadata = {}
-
 
 def clean_name(name):
     name = name.lower()
@@ -165,10 +166,14 @@ def get_tmdb_from_id(id):
 
 
 def get_imdb(name):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.9',
+    }
+    
     try:
-        # Use requests to handle redirects
         search_url = f"https://www.imdb.com/find?q={urllib.parse.quote(name)}&s=tt"
-        response = requests.get(search_url, allow_redirects=True)
+        response = requests.get(search_url, headers=headers, allow_redirects=True)
         response.raise_for_status()
 
         # If we're redirected to a specific title page, extract the ID
@@ -198,6 +203,7 @@ def get_imdb(name):
         }
     except Exception as err:
         print(f"Error fetching IMDb data: {err}")
+        time.sleep(random.uniform(1, 3))  # Add a random delay between requests
         return {}
 
 
