@@ -2,6 +2,8 @@ services:
     movie-script-database:
         image: ceramicwhite/movie-script-database
         container_name: movie-script-database
+        restart: on-failure
+        init: true
         environment:
             - RUN_GET_SCRIPTS=true
             - USE_IMSDB=true
