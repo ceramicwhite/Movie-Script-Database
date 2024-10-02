@@ -7,9 +7,8 @@ RUN_GET_METADATA=${RUN_GET_METADATA:-"true"}
 # Update sources.json based on environment variables
 for source in imsdb screenplays scriptsavant dailyscript awesomefilm sfy scriptslug actorpoint scriptpdf; do
     env_var="USE_${source^^}"
-    if [ "${!env_var}" = "true" ] || [ "${!env_var}" = "false" ]; then
-        jq ".$source = \"${!env_var}\"" sources.json > temp.json && mv temp.json sources.json
-    fi
+    env_value=${!env_var:-"true"}
+    jq ".$source = \"$env_value\"" sources.json > temp.json && mv temp.json sources.json
 done
 
 # Run get_scripts.py if RUN_GET_SCRIPTS is true
