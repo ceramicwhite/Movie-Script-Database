@@ -1,0 +1,19 @@
+services:
+    movie-script-database:
+        image: ceramicwhite/movie-script-database
+        container_name: movie-script-database
+        environment:
+            - TMDB_API_KEY=your_api_key_here
+            - RUN_GET_METADATA=true
+            - RUN_GET_SCRIPTS=true
+            - USE_DAILYSCRIPT=false
+            - USE_IMSDB=true
+            - USE_SCREENPLAYS=true
+            - USE_SCRIPTSAVANT=true
+            - USE_AWESOMEFILM=true
+            - USE_SFY=true
+            - USE_SCRIPTSLUG=true
+            - USE_ACTORPOINT=true
+            - USE_SCRIPTPDF=true
+        volumes:
+            - ./scripts:/app/scripts
