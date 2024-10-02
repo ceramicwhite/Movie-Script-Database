@@ -14,6 +14,8 @@ import imdb
 
 from dotenv import load_dotenv
 import os
+import requests
+from bs4 import BeautifulSoup
 
 load_dotenv()  # Load environment variables from .env file
 
@@ -164,26 +166,38 @@ def get_tmdb_from_id(id):
 
 def get_imdb(name):
     try:
-        movies = ia.search_movie(name)
-        if len(movies) > 0:
-            movie_id = movies[0].movieID
-            movie = movies[0]
+        # Use requests to handle redirects
+        search_url = f"https://www.imdb.com/find?q={urllib.parse.quote(name)}&s=tt"
+        response = requests.get(search_url, allow_redirects=True)
+        response.raise_for_status()
 
-            if 'year' in movie:
-                release_date = movie['year']
-            else:
-                print("Field missing in response")
-                return {}
-
-            return {
-                "title": unidecode(movie['title']),
-                "release_date": release_date,
-                "id": movie_id,
-            }
+        # If we're redirected to a specific title page, extract the ID
+        if '/title/tt' in response.url:
+            movie_id = response.url.split('/title/')[1].split('/')[0]
         else:
+            # Otherwise, parse the search results
+            soup = BeautifulSoup(response.text, 'html.parser')
+            first_result = soup.select_one('.findResult .result_text a')
+            if not first_result:
+                return {}
+            movie_id = first_result['href'].split('/title/')[1].split('/')[0]
+
+        # Fetch movie details using IMDbPY
+        movie = ia.get_movie(movie_id.replace('tt', ''))
+
+        if 'year' in movie:
+            release_date = movie['year']
+        else:
+            print("Year missing in response")
             return {}
+
+        return {
+            "title": unidecode(movie['title']),
+            "release_date": release_date,
+            "id": movie_id,
+        }
     except Exception as err:
-        print(err)
+        print(f"Error fetching IMDb data: {err}")
         return {}
 
 
