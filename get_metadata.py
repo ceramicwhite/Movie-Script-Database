@@ -12,7 +12,10 @@ from fuzzywuzzy import fuzz
 
 import imdb
 
-import config
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  # Load environment variables from .env file
 
 ia = imdb.IMDb()
 
@@ -23,7 +26,7 @@ META_DIR = join("scripts", "metadata")
 TMDB_MOVIE_URL = "https://api.themoviedb.org/3/search/movie?api_key=%s&language=en-US&query=%s&page=1"
 TMDB_TV_URL = "https://api.themoviedb.org/3/search/tv?api_key=%s&language=en-US&query=%s&page=1"
 TMDB_ID_URL = "https://api.themoviedb.org/3/find/%s?api_key=%s&language=en-US&external_source=imdb_id"
-tmdb_api_key = config.tmdb_api_key
+tmdb_api_key = os.getenv('TMDB_API_KEY')  # Get API key from environment variable
 
 forbidden = ["the", "a", "an", "and", "or", "part",
              "vol", "chapter", "movie", "transcript"]
