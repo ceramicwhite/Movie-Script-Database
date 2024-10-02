@@ -30,4 +30,8 @@ COPY . .
 
 EXPOSE 3000
 
-CMD python get_scripts.py
+# Add entrypoint
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
