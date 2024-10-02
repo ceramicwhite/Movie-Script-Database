@@ -4,6 +4,9 @@
 RUN_GET_SCRIPTS=${RUN_GET_SCRIPTS:-"true"}
 RUN_GET_METADATA=${RUN_GET_METADATA:-"true"}
 
+# Create log directory if it doesn't exist
+mkdir -p /app/log
+
 # Update sources.json based on environment variables
 for source in imsdb screenplays scriptsavant dailyscript awesomefilm sfy scriptslug actorpoint scriptpdf; do
     env_var="USE_${source^^}"
@@ -13,12 +16,14 @@ done
 
 # Run get_scripts.py if RUN_GET_SCRIPTS is true
 if [ "$RUN_GET_SCRIPTS" = "true" ]; then
-    python get_scripts.py
+    echo "Running get_scripts.py..."
+    python get_scripts.py 2>&1 | tee /app/log/get_scripts.log
 fi
 
 # Run get_metadata.py if RUN_GET_METADATA is true
 if [ "$RUN_GET_METADATA" = "true" ]; then
-    python get_metadata.py
+    echo "Running get_metadata.py..."
+    python get_metadata.py 2>&1 | tee /app/log/get_metadata.log
 fi
 
 # Keep the container running
